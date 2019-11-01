@@ -11,14 +11,16 @@ public class WeatherStationSensorsTest
     private WeatherStationSensors _weatherStationSensors;
 
     [SetUp]
-    public void SetUp() {
+    public void SetUp() 
+    {
         _dummyA = new DummyA();
         _dummyB = new DummyB();
         _weatherStationSensors = new WeatherStationSensors(_dummyA, _dummyB);
     }
 
     [Test]
-    public void ValidatesUriWhenAddingSensor() {
+    public void ValidatesUriWhenAddingSensor() 
+    {
         _weatherStationSensors.AddSensor("id1", SensorType.TEMPERATURE, "a:test");
         _weatherStationSensors.AddSensor("id2", SensorType.TEMPERATURE, "b:test");
 
@@ -26,16 +28,19 @@ public class WeatherStationSensorsTest
     }
 
     [Test]
-    public void TemperatureSensorVendorA() {
+    public void TemperatureSensorVendorA() 
+    {
         CheckTemperatureSensor("a:test", _dummyA.Values);
     }
 
     [Test]
-    public void TemperatureSensorVendorB() {
+    public void TemperatureSensorVendorB() 
+    {
         CheckTemperatureSensor("b:test", _dummyB.Values);
     }
 
-    private void CheckTemperatureSensor(string uri, IDictionary<string, double?> values) {
+    private void CheckTemperatureSensor(string uri, IDictionary<string, double?> values)
+    {
         _weatherStationSensors.AddSensor("id", SensorType.TEMPERATURE, uri);
 
         CheckSingleValue(_weatherStationSensors.ReadSensorValues(), "id", null, false, "°C");
@@ -51,16 +56,19 @@ public class WeatherStationSensorsTest
     }
 
     [Test]
-    public void WindSpeedSensorVendorA() {
+    public void WindSpeedSensorVendorA() 
+    {
         CheckWindSpeedSensor("a:test", _dummyA.Values);
     }
 
     [Test]
-    public void WindSpeedSensorVendorB() {
+    public void WindSpeedSensorVendorB() 
+    {
         CheckWindSpeedSensor("b:test", _dummyB.Values);
     }
 
-    private void CheckWindSpeedSensor(string uri, IDictionary<string, double?> values) {
+    private void CheckWindSpeedSensor(string uri, IDictionary<string, double?> values) 
+    {
         _weatherStationSensors.AddSensor("id", SensorType.WIND_SPEED, uri);
 
         values[uri] = 27.3;
@@ -71,12 +79,14 @@ public class WeatherStationSensorsTest
     }
 
     [Test]
-    public void WindDirectionSensorVendorA() {
+    public void WindDirectionSensorVendorA() 
+    {
         CheckWindDirectionSensor("a:test", _dummyA.Values);
     }
 
     [Test]
-    public void WindDirectionSensorVendorB() {
+    public void WindDirectionSensorVendorB() 
+    {
         CheckWindDirectionSensor("b:test", _dummyB.Values);
     }
 
@@ -98,12 +108,14 @@ public class WeatherStationSensorsTest
     }
 
     [Test, Description("Humidity Sensor")]
-    public void HumiditySensorVendorA() {
+    public void HumiditySensorVendorA() 
+    {
         CheckHumiditySensor("a:test", _dummyA.Values);
     }
 
     [Test, Description("Humidity Sensor")]
-    public void HumiditySensorVendorB() {
+    public void HumiditySensorVendorB() 
+    {
         CheckHumiditySensor("b:test", _dummyB.Values);
     }
 
@@ -122,7 +134,8 @@ public class WeatherStationSensorsTest
     }
 
     [Test]
-    public void MultipleSensors() {
+    public void MultipleSensors() 
+    {
         _weatherStationSensors.AddSensor("A", SensorType.TEMPERATURE, "a:test");
         _weatherStationSensors.AddSensor("B", SensorType.HUMIDITY, "b:test");
 
@@ -135,7 +148,8 @@ public class WeatherStationSensorsTest
     }
 
     [Test]
-    public void ErrorHandling() {
+    public void ErrorHandling() 
+    {
         _weatherStationSensors.AddSensor("A", SensorType.TEMPERATURE, "a:test");
         _weatherStationSensors.AddSensor("B", SensorType.HUMIDITY, "b:test");
 
@@ -149,12 +163,14 @@ public class WeatherStationSensorsTest
         CheckValue(values, "B", null, false, "%");
     }
 
-    private void CheckSingleValue(IDictionary<string, SensorValue> values, string id, double? number, bool valid, string unit) {
+    private void CheckSingleValue(IDictionary<string, SensorValue> values, string id, double? number, bool valid, string unit) 
+    {
         Assert.AreEqual(1, values.Count);
         CheckValue(values, id, number, valid, unit);
     }
 
-    private void CheckValue(IDictionary<string, SensorValue> values, string id, double? number, bool valid, string unit) {
+    private void CheckValue(IDictionary<string, SensorValue> values, string id, double? number, bool valid, string unit) 
+    {
         SensorValue value = values[id];
         Assert.AreEqual(number, value.Value);
         Assert.AreEqual(valid, value.Valid);
@@ -177,12 +193,15 @@ public class WeatherStationSensorsTest
         public double ReadDoubleValue(string uri)
         {
             double? value = null;
-            if (Values.ContainsKey(uri)) {
+            if (Values.ContainsKey(uri)) 
+            {
                 value = Values[uri];
             }
-            if (value.HasValue) {
+            if (value.HasValue) 
+            {
                 return value.Value;
-            } else {
+            } else 
+            {
                 throw new IOException("error");
             }
         }
@@ -193,7 +212,8 @@ public class WeatherStationSensorsTest
         public IDictionary<string, double?> Values { get; }
         public bool ThrowConnectError { get; set; }
 
-        public DummyB() {
+        public DummyB() 
+        {
             Values = new Dictionary<string, double?>();
         }
 
@@ -202,20 +222,22 @@ public class WeatherStationSensorsTest
             return uri.StartsWith("b:");
         }
 
-        public VendorBConnection Connect()
+        public IVendorBConnection Connect()
         {
-            if (ThrowConnectError) {
+            if (ThrowConnectError) 
+            {
                 throw new IOException("Failed to connect");
             }
             return new DummyBConnection(Values);
         }
     }
 
-    class DummyBConnection : VendorBConnection
+    class DummyBConnection : IVendorBConnection
     {
         private readonly IDictionary<string, double?> _values;
 
-        public DummyBConnection(IDictionary<string, double?> values) {
+        public DummyBConnection(IDictionary<string, double?> values) 
+        {
             _values = values;
         }
 
@@ -226,15 +248,17 @@ public class WeatherStationSensorsTest
         public double ReadDoubleValue(string uri)
         {
              double? value = null;
-            if (_values.ContainsKey(uri)) {
+            if (_values.ContainsKey(uri)) 
+            {
                 value = _values[uri];
             }
-            if (value.HasValue) {
+            if (value.HasValue) 
+            {
                 return value.Value;
-            } else {
+            } else 
+            {
                 throw new IOException("error");
             }
         }
     }
-
 }
