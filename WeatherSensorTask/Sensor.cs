@@ -1,8 +1,6 @@
-using System;
-
 public class Sensor 
 {
-    public Sensor(String id, SensorType type, String uri) 
+    public Sensor(string id, SensorType type, string uri) 
     {
         Id = id;
         Type = type;
